@@ -1,0 +1,25 @@
+// main.js
+import kaplay from "kaplay";
+import { conveyor } from "./conveyor.js";
+
+kaplay({ width: 800, height: 400, background: [26, 26, 46] });
+
+// Add the belt — pos() places the LEFT roller centre
+const belt = add([
+  pos(100, 200),
+  conveyor({
+    diameter:    60,
+    length:      550,
+    thickness:   10,
+    dashLength:  20,
+    gapLength:   20,
+    speed:       100,           // px/sec rightward
+    beltColor:   rgb(200, 168, 75),
+    rollerColor: rgb(120, 120, 154),
+  }),
+]);
+
+// Reverse direction with arrow keys
+onKeyDown("left",  () => belt.speed = -100);
+onKeyDown("right", () => belt.speed =  100);
+onKeyPress("space", () => belt.speed = 0);
