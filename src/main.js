@@ -58,7 +58,10 @@ k.loadSprite("milk","src/sprites/Milk.png", {
 k.loadSprite("kicker", "src/sprites/KickerPiston.png", {
     sliceX:3,
     sliceY:1})    
-
+k.loadSprite("conveyorTest", "src/sprites/Conveyor.png",{
+    sliceX:1,
+    sliceY:6
+})
 const NUM_CONVEYOR_SLICES = 4
 const GAME_TIME_LENGTH = 90
 var gameTime = 0
@@ -705,63 +708,24 @@ class ConveryorController
         this.insertRate = 60
         this.healthMultiplier = 1.0
         this.gearIndex = 0
-        this.gearSpeed = 1.5
+        this.gearSpeed = 130
         this.gearSpeedReset = this.gearSpeed
-
+        this.beltFrameIndex = 0
         this.goodKickerTime = 0
         this.badKickerTime = 0
 
-         var callback = (function(){
-   
-            if(this.gearSpeed <= 0)
-            {
-                this.gearL.frame = this.gearIndex
-                this.gearR.frame = this.gearIndex
-                this.gearIndex++
-                if(this.gearIndex >= 6)
-                {
-                    this.gearIndex = 0
-                }
-                this.gearSpeed = this.gearSpeedReset
-            }
-            else
-            {
-                this.gearSpeed--
-            }                
-        }).bind(this)
 
-        this.belt = add([
-            pos(200, 610),
-            z(7),
-            conveyor({
-                diameter:    210,
-                length:      1080,
-                thickness:   10,
-                dashLength:  20,
-                gapLength:   20,
-                speed:       -200,           // px/sec rightward
-                beltColor:   rgb(0, 0, 0),
-                rollerColor: rgb(120, 120, 154),
-                rollerCallback: callback
-            }),
-        ]);
 
-        this.gearL = add([sprite("gear"),
-            pos(this.belt.pos.x,this.belt.pos.y),
-            scale(1,1),
+      
+        this.belt = add([sprite("conveyorTest"),
+            pos(100,480),
+            scale(0.8,0.8),
             z(10),
-            anchor("center")
+            anchor("topleft"),
             ])
 
-        this.gearR = add([sprite("gear"),
-            pos(this.belt.pos.x + this.belt.length,this.belt.pos.y),
-            scale(1,1),
-            z(10),
-            anchor("center")
-            ])  
-            
         this.kickerGood = add([sprite("kicker"),
-            pos(recycleBinXpos,this.belt.pos.y-260),
+            pos(recycleBinXpos,this.belt.pos.y-135),
             scale(0.5,0.5),
             z(10),
             anchor("center")
@@ -769,7 +733,7 @@ class ConveryorController
         
         
         this.kickerBad = add([sprite("kicker"),
-            pos(trashBinXpos + 120,this.belt.pos.y-260),
+            pos(trashBinXpos + 120,this.belt.pos.y-135),
             scale(0.5,0.5),
             z(10),
             anchor("center")
@@ -777,7 +741,25 @@ class ConveryorController
         }
         
 
+        conveyerUpdate(){
+   
+            if(this.gearSpeed <= 0)
+            {
+                this.belt.frame = this.beltFrameIndex
+                this.gearIndex++
+                this.beltFrameIndex++
 
+                if(this.beltFrameIndex >= 6)
+                {
+                    this.beltFrameIndex = 0
+                }
+                this.gearSpeed = this.gearSpeedReset
+            }
+            else
+            {
+                this.gearSpeed--
+            }                
+        }
 
     setInsertRate(insertRate)  
     {
@@ -786,7 +768,7 @@ class ConveryorController
             this.insertRate = 100
             conveyorSpeed = 2
             this.belt.speed = -200
-            this.gearSpeedReset = 1.5
+            this.gearSpeedReset = 8
         }
 
         if(insertRate == 1)
@@ -794,7 +776,7 @@ class ConveryorController
             this.insertRate = 70
             conveyorSpeed = 3
             this.belt.speed = -280
-            this.gearSpeedReset = 1.0
+            this.gearSpeedReset = 3.5
         }
 
         if(insertRate == 2)
@@ -802,7 +784,7 @@ class ConveryorController
             this.insertRate = 30
             this.belt.speed = -432
             conveyorSpeed = 4.5
-             this.gearSpeedReset =0
+            this.gearSpeedReset = 2
         }
         
     } 
@@ -848,6 +830,7 @@ class ConveryorController
 
     run(difficultyController)
     {
+        this.conveyerUpdate()
         if(this.tSinceLast == 0)
         {
             if(allsprites.length < 20)
