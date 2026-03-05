@@ -731,7 +731,7 @@ class ConveryorController
 
       
         this.belt = add([sprite("conveyorTest"),
-            pos(100,480),
+            pos(100,484),
             scale(0.8,0.8),
             z(10),
             anchor("topleft"),
