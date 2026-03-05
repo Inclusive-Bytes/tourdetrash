@@ -80,7 +80,7 @@ k.loadSprite("conveyorTest", "src/sprites/Conveyor.png",{
 k.loadSprite("flame", "src/sprites/Flames.png", {
     sliceX:7,
     sliceY:1,
-anims:{flame:{frames:[0,1,2,3,4,5,6,5,4,3,2,1,0], loop:true, speed: 20}}})
+anims:{flame:{frames:[0,1,2,,3,2,1,3,2,3,4,,3,4,3,4,5,6,5,6,4,5,6,5,4,3,,4,3,4,3,2,3,2,1,2,1,2,1,0,1,0], loop:true, speed: 20}}})
 
 const NUM_CONVEYOR_SLICES = 4
 const GAME_TIME_LENGTH = 90
@@ -1010,6 +1010,7 @@ scene("game", () => {
         if(gameOver)
         {   
             musicHandle.stop()
+            exports.setOnMessageCallback(null)
             return;
         }            
 
