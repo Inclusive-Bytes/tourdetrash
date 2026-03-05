@@ -55,6 +55,19 @@ k.loadSprite("milk","src/sprites/Milk.png", {
     sliceX:2,
     sliceY:2})
 
+k.loadSprite("sprite","src/sprites/Sprite.png", {
+    sliceX:2,
+    sliceY:2})
+
+k.loadSprite("box","src/sprites/box.png", {
+    sliceX:2,
+    sliceY:2})
+
+k.loadSprite("butter","src/sprites/butter.png", {
+    sliceX:2,
+    sliceY:2})
+
+
 k.loadSprite("kicker", "src/sprites/KickerPiston.png", {
     sliceX:3,
     sliceY:1})    
@@ -254,7 +267,7 @@ class Score extends Widget
         scale(2),
         rotate(0),
         anchor("center"),
-        color(255,255,255),
+        color(255,0,0),
         z(200)
     ])
     }
@@ -364,7 +377,7 @@ class ConveyorItem extends Widget
 
     trashing()
     {
-        this._ypos += 8
+        this._ypos += 4
         this._img.pos.y = this._ypos
         if(this._ypos >= TRASHING_Y)
         {
@@ -377,7 +390,7 @@ class ConveyorItem extends Widget
 
     recycling()
     {
-        this._ypos += 8
+        this._ypos += 4
         this._img.pos.y = this._ypos
         if(this._ypos >= TRASHING_Y)
         {
@@ -630,7 +643,7 @@ class TimeDisplay
         pos(width()-width()/4,40),
         scale(2),
         anchor("center"),
-        color(255,255,255),
+        color(255,0,0),
         outline(10,BLACK),
         z(200)
     ]);
@@ -811,16 +824,30 @@ class ConveryorController
         this.healthMultiplier = m
     }
 
+    getMaxItemIndex(difficultyController)
+    {
+        var level = difficultyController.getDifficulty()
+        if (level < 0.3)
+            return 1
+        if (level >= 0.3 & level < 0.6)
+            return 3
+        if (level >= 0.6)
+            return 6
+    }
+
     addConveyorItem(difficultyController)
     {
         var convItem = []
+        convItem.push({name: "sprite", health:5})
         convItem.push({ name:"crisps", health:4})
-        convItem.push({name: "tin", health:5})
+        convItem.push({name:"box", health: 6})
+        convItem.push({name:"butter", health: 8})
         convItem.push({name:"milk", health: 10})
-        convItem.push({name:"coke", health: 15})
+        convItem.push({name:"coke", health: 12})
+        convItem.push({name: "tin", health:15})
 
-
-        var max = Math.floor(difficultyController.getDifficulty() * convItem.length)
+        var max = this.getMaxItemIndex(difficultyController)
+       
 
         var item = convItem[getRandomInt(0, max)]
 
@@ -1031,7 +1058,6 @@ scene("gameover", () => {
         color(255,0,0),
         z(200)
     ])
-
     function onMessage(event)
     {
 
