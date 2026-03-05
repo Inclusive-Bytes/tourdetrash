@@ -36,6 +36,7 @@ k.loadSprite("recycleadd","src/sprites/recycleadd.png")
 k.loadSprite("gameover","src/sprites/GameOver.png")
 k.loadSprite("background","src/sprites/Background.png")
 k.loadSprite("logo","src/sprites/logo.png")
+k.loadSprite("convback","src/sprites/convback.png")
 k.loadSprite("gear", "src/sprites/gears.png", {
     sliceX:2,
     sliceY:3})
@@ -75,6 +76,12 @@ k.loadSprite("conveyorTest", "src/sprites/Conveyor.png",{
     sliceX:1,
     sliceY:6
 })
+
+k.loadSprite("flame", "src/sprites/Flames.png", {
+    sliceX:7,
+    sliceY:1,
+anims:{flame:{frames:[0,1,2,3,4,5,6,5,4,3,2,1,0], loop:true, speed: 20}}})
+
 const NUM_CONVEYOR_SLICES = 4
 const GAME_TIME_LENGTH = 90
 var gameTime = 0
@@ -731,7 +738,7 @@ class ConveryorController
 
       
         this.belt = add([sprite("conveyorTest"),
-            pos(100,484),
+            pos(100,480),
             scale(0.8,0.8),
             z(10),
             anchor("topleft"),
@@ -751,7 +758,37 @@ class ConveryorController
             z(10),
             anchor("center")
             ])        
+        
+        
+        this.convback = add([sprite("convback"),
+            pos(this.belt.pos.x+200, this.belt.pos.y+35),
+            scale(0.8,0.8),
+            z(1),
+            anchor("topleft")
+            ])    
+            
+                    
+        this.flame1 = add([sprite("flame"),
+            pos(this.belt.pos.x+252, this.belt.pos.y+50),
+            scale(0.5,0.3),
+            z(1),
+            anchor("topleft")
+            ])   
+
+        this.flame2 = add([sprite("flame"),
+            pos(this.belt.pos.x+1205, this.belt.pos.y+57),
+            scale(0.5,0.3),
+            z(1),
+            anchor("topleft")
+            ]) 
+            
+        this.flame1.play("flame")
+        this.flame2.play("flame")
+
         }
+
+        
+
         
 
         conveyerUpdate(){
