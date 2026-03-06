@@ -740,7 +740,7 @@ class ConveryorController
         this.belt = add([sprite("conveyorTest"),
             pos(100,480),
             scale(0.8,0.8),
-            z(10),
+            z(7),
             anchor("topleft"),
             ])
 
@@ -1089,7 +1089,7 @@ scene("gameover", () => {
 
     var scoreText = k.add([
         text("Score:", {font: "jersey"}),
-        pos(width()/2 ,height() - 120),
+        pos(width()/2 ,height() - 110),
         scale(3),
         rotate(0),
         anchor("center"),
