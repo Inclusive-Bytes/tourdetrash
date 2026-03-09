@@ -366,7 +366,7 @@ class ConveyorItem extends Widget
         {
 
             this._state = TRASHING_STATE
-            allsprites.push(new NumberWidget(this._xpos, this._ypos, theScore.getx(), theScore.gety(),-this._maxhealth))
+            allsprites.push(new NumberWidget(this._xpos, this._ypos, theScore.getx()+ 100, theScore.gety(),-this._maxhealth))
             wrongHandle = k.play("wrong", {volume: 1, loop: false})
             this.conveyorController.badKick()
         }
