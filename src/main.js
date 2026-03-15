@@ -36,6 +36,7 @@ k.loadSprite("recycleadd","src/sprites/recycleadd.png")
 k.loadSprite("gameover","src/sprites/GameOver.png")
 k.loadSprite("background","src/sprites/Background.png")
 k.loadSprite("logo","src/sprites/logo.png")
+k.loadSprite("convback","src/sprites/convback.png")
 k.loadSprite("gear", "src/sprites/gears.png", {
     sliceX:2,
     sliceY:3})
@@ -75,6 +76,12 @@ k.loadSprite("conveyorTest", "src/sprites/Conveyor.png",{
     sliceX:1,
     sliceY:6
 })
+
+k.loadSprite("flame", "src/sprites/Flames.png", {
+    sliceX:7,
+    sliceY:1,
+anims:{flame:{frames:[0,1,2,,3,2,1,3,2,3,4,,3,4,3,4,5,6,5,6,4,5,6,5,4,3,,4,3,4,3,2,3,2,1,2,1,2,1,0,1,0], loop:true, speed: 20}}})
+
 const NUM_CONVEYOR_SLICES = 4
 const GAME_TIME_LENGTH = 90
 var gameTime = 0
@@ -359,7 +366,7 @@ class ConveyorItem extends Widget
         {
 
             this._state = TRASHING_STATE
-            allsprites.push(new NumberWidget(this._xpos, this._ypos, theScore.getx(), theScore.gety(),-this._maxhealth))
+            allsprites.push(new NumberWidget(this._xpos, this._ypos, theScore.getx()+ 100, theScore.gety(),-this._maxhealth))
             wrongHandle = k.play("wrong", {volume: 1, loop: false})
             this.conveyorController.badKick()
         }
@@ -674,6 +681,8 @@ class TimeDisplay
     }
 }
 
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class DifficultyController
 {
@@ -684,9 +693,10 @@ class DifficultyController
 
     }
 
+
     getDifficulty()
     {
-        return this.timeDisplay.getTimeSoFar() / GAME_TIME_LENGTH
+        return this.timeDisplay.getTimeSoFar() / GAME_TIME_LENGTH   
     }
 
     runDifficulty()
@@ -715,7 +725,7 @@ class DifficultyController
 
 class ConveryorController
 {
-    constructor()
+    constructor(demo)
     {
         this.tSinceLast = 0
         this.insertRate = 60
@@ -726,14 +736,14 @@ class ConveryorController
         this.beltFrameIndex = 0
         this.goodKickerTime = 0
         this.badKickerTime = 0
-
+        this.demo = demo
 
 
       
         this.belt = add([sprite("conveyorTest"),
-            pos(100,484),
+            pos(100,480),
             scale(0.8,0.8),
-            z(10),
+            z(7),
             anchor("topleft"),
             ])
 
@@ -751,7 +761,37 @@ class ConveryorController
             z(10),
             anchor("center")
             ])        
+        
+        
+        this.convback = add([sprite("convback"),
+            pos(this.belt.pos.x+200, this.belt.pos.y+35),
+            scale(0.8,0.8),
+            z(1),
+            anchor("topleft")
+            ])    
+            
+                    
+        this.flame1 = add([sprite("flame"),
+            pos(this.belt.pos.x+252, this.belt.pos.y+50),
+            scale(0.5,0.3),
+            z(1),
+            anchor("topleft")
+            ])   
+
+        this.flame2 = add([sprite("flame"),
+            pos(this.belt.pos.x+1205, this.belt.pos.y+57),
+            scale(0.5,0.3),
+            z(1),
+            anchor("topleft")
+            ]) 
+            
+        this.flame1.play("flame")
+        this.flame2.play("flame")
+
         }
+
+        
+
         
 
         conveyerUpdate(){
@@ -826,6 +866,8 @@ class ConveryorController
 
     getMaxItemIndex(difficultyController)
     {
+        if(this.demo)
+            return 6
         var level = difficultyController.getDifficulty()
         if (level < 0.3)
             return 1
@@ -900,7 +942,7 @@ scene("game", () => {
 
     var gameTimer = new TimeDisplay()
 
-    var conveyorController = new ConveryorController()
+    var conveyorController = new ConveryorController(false)
 
     var difficultyController = new DifficultyController(gameTimer, conveyorController)
 
@@ -973,6 +1015,7 @@ scene("game", () => {
         if(gameOver)
         {   
             musicHandle.stop()
+            exports.setOnMessageCallback(null)
             return;
         }            
 
@@ -1051,7 +1094,7 @@ scene("gameover", () => {
 
     var scoreText = k.add([
         text("Score:", {font: "jersey"}),
-        pos(width()/2 ,height() - 120),
+        pos(width()/2 ,height() - 110),
         scale(3),
         rotate(0),
         anchor("center"),
@@ -1104,11 +1147,18 @@ scene("awaitingStart", () => {
     var logo = k.add([sprite("logo"),
         pos(0,0),
         scale(0.7,0.7),
-        z(50),
+        z(5),
         anchor("topleft")
     ])
 
     var currentSpeed = 0
+    var speedCounter = 0
+
+    var piston1 = new Piston(width() * 0.1,60,0)
+
+    var piston2 = new Piston(width() * 0.9,60,4)
+
+
 
     allsprites = []
 
@@ -1127,6 +1177,14 @@ scene("awaitingStart", () => {
         if(dataId == 0) // Always use player 1 (id0)
         {
             currentSpeed = speed
+            if(currentSpeed > 0)
+            {
+                speedCounter ++
+            }
+            else
+            {
+                speedCounter = 0
+            }
         }
  
     }
@@ -1137,13 +1195,16 @@ scene("awaitingStart", () => {
  
         logo.scale = vec2(width() / logo.width, height() / logo.height)
 
-        if(currentSpeed > 100)
+        if(speedCounter > 5)
         {
             exports.setOnMessageCallback(null)
             go("game")
         }
 
-    }
+        piston1.draw()
+        piston2.draw()
+
+   }
 
     loop(0.1,sprot)
 
