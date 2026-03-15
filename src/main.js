@@ -681,6 +681,8 @@ class TimeDisplay
     }
 }
 
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class DifficultyController
 {
@@ -691,9 +693,10 @@ class DifficultyController
 
     }
 
+
     getDifficulty()
     {
-        return this.timeDisplay.getTimeSoFar() / GAME_TIME_LENGTH
+        return this.timeDisplay.getTimeSoFar() / GAME_TIME_LENGTH   
     }
 
     runDifficulty()
@@ -722,7 +725,7 @@ class DifficultyController
 
 class ConveryorController
 {
-    constructor()
+    constructor(demo)
     {
         this.tSinceLast = 0
         this.insertRate = 60
@@ -733,7 +736,7 @@ class ConveryorController
         this.beltFrameIndex = 0
         this.goodKickerTime = 0
         this.badKickerTime = 0
-
+        this.demo = demo
 
 
       
@@ -863,6 +866,8 @@ class ConveryorController
 
     getMaxItemIndex(difficultyController)
     {
+        if(this.demo)
+            return 6
         var level = difficultyController.getDifficulty()
         if (level < 0.3)
             return 1
@@ -937,7 +942,7 @@ scene("game", () => {
 
     var gameTimer = new TimeDisplay()
 
-    var conveyorController = new ConveryorController()
+    var conveyorController = new ConveryorController(false)
 
     var difficultyController = new DifficultyController(gameTimer, conveyorController)
 
@@ -1142,11 +1147,18 @@ scene("awaitingStart", () => {
     var logo = k.add([sprite("logo"),
         pos(0,0),
         scale(0.7,0.7),
-        z(50),
+        z(5),
         anchor("topleft")
     ])
 
     var currentSpeed = 0
+    var speedCounter = 0
+
+    var piston1 = new Piston(width() * 0.1,60,0)
+
+    var piston2 = new Piston(width() * 0.9,60,4)
+
+
 
     allsprites = []
 
@@ -1165,6 +1177,14 @@ scene("awaitingStart", () => {
         if(dataId == 0) // Always use player 1 (id0)
         {
             currentSpeed = speed
+            if(currentSpeed > 0)
+            {
+                speedCounter ++
+            }
+            else
+            {
+                speedCounter = 0
+            }
         }
  
     }
@@ -1175,13 +1195,16 @@ scene("awaitingStart", () => {
  
         logo.scale = vec2(width() / logo.width, height() / logo.height)
 
-        if(currentSpeed > 100)
+        if(speedCounter > 5)
         {
             exports.setOnMessageCallback(null)
             go("game")
         }
 
-    }
+        piston1.draw()
+        piston2.draw()
+
+   }
 
     loop(0.1,sprot)
 
