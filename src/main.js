@@ -731,8 +731,8 @@ class ConveryorController
         this.insertRate = 60
         this.healthMultiplier = 1.0
         this.gearIndex = 0
-        this.gearSpeed = 130
-        this.gearSpeedReset = this.gearSpeed
+        this.gearSpeed = 0
+        this.gearSpeedReset = 130
         this.beltFrameIndex = 0
         this.goodKickerTime = 0
         this.badKickerTime = 0
@@ -1014,7 +1014,6 @@ scene("game", () => {
     {
         if(gameOver)
         {   
-            musicHandle.stop()
             exports.setOnMessageCallback(null)
             return;
         }            
