@@ -126,11 +126,11 @@ class WSManager
     initConnections()
     {
    
-        exports.startWebsocket(`ws://127.0.0.1:8765/ws`,index)
+        exports.startWebsocket(`ws://127.0.0.1:8765/ws`,index);
 
     }
 
-  
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 var flickerDriver = 0
