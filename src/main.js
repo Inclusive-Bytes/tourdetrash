@@ -883,10 +883,10 @@ class ConveryorController
         convItem.push({name: "sprite", health:5})
         convItem.push({ name:"crisps", health:4})
         convItem.push({name:"box", health: 6})
-        convItem.push({name:"butter", health: 8})
-        convItem.push({name:"milk", health: 10})
-        convItem.push({name:"coke", health: 12})
-        convItem.push({name: "tin", health:15})
+        convItem.push({name:"butter", health: 7})
+        convItem.push({name:"milk", health: 7})
+        convItem.push({name:"coke", health: 8})
+        convItem.push({name: "tin", health:9})
 
         var max = this.getMaxItemIndex(difficultyController)
        
