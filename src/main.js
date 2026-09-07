@@ -125,38 +125,12 @@ class WSManager
     }        
     initConnections()
     {
-        exports.setOnMessageCallback(this.onMessage)
    
-        exports.startWebsocket(`ws://192.168.4.1/ws`,index)
-
-
+        exports.startWebsocket(`ws://127.0.0.1:8765/ws`,index)
 
     }
 
-    onMessage(event)
-    {
-        var message = JSON.parse(event.data)
-        if(message != null)
-        {
-            if(message.type != undefined && message.type == "connectedips")
-            {
-                var connectedIps = message.ipAddresses
-                if(connectedIps != undefined && connectedIps.length)
-                {
-                    connectedIps.forEach((ipaddr) =>
-                    {
-                        if(exports.findIP(ipaddr) == false)
-                        {
-                            index++
-                            exports.startWebsocket(`ws://${ipaddr}/ws`,index)
-                        }
-                    })
-                }
-            }
-        }
-
-    }
-}
+  
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 var flickerDriver = 0
@@ -548,22 +522,24 @@ scene("initialise", ()=>
         z(200)
     ])
 
+    exports.setOnMessageCallback(awaitConnections)
     wsManager.initConnections()
 
-
-    function awaitConnections()
+ 
+    function awaitConnections(message)
     {
-     
-        var connCount = exports.getConnections()
-        initText.text="Initialising:"+connCount
-        if( connCount >=1)     
+
+        if(message != undefined)
         {
-            exports.removeDisconnected()
-            initText.destroy()
-            go("awaitingStart")
-            exports.setOnMessageCallback(null)
+            const jsonObject = JSON.parse(message.data);
+            if(jsonObject.type != "speed_data")
+                return
+            if(jsonObject.devices >= 1) // The locally hosted service reports the number of connections within the speed packet
+            {
+                go("awaitingStart")
+
+            }
         }
-     
     }
 
     loop(.5,awaitConnections)
